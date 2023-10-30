@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import {DateTime} from 'luxon';
 
 export enum DateTimeFormat {
@@ -8,6 +7,7 @@ export enum DateTimeFormat {
     DATE_OR_TIME = 'DATE_OR_TIME',
     TIME_OR_DATE_TIME = 'TIME_OR_DATE_TIME',
     YEAR = 'YEAR',
+    YEAR_MONTH_DAY = 'YEAR_MONTH_DAY',
 }
 
 export const formatDateTime = (datetime: string | undefined, format: DateTimeFormat): string => {
@@ -25,6 +25,8 @@ export const formatDateTime = (datetime: string | undefined, format: DateTimeFor
             return dt.toFormat('d.M.yyyy  H:mm');
         case DateTimeFormat.YEAR:
             return dt.toFormat('yyyy');
+        case DateTimeFormat.YEAR_MONTH_DAY:
+            return dt.toFormat('yyyy-MM-dd');
         case DateTimeFormat.DATE_OR_TIME:
             if (dt.hasSame(now, 'day')) {
                 return dt.toFormat('H:mm');

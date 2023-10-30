@@ -2,6 +2,7 @@ import React, {useRef} from 'react';
 import styled from 'styled-components';
 import {useOnClickOutside} from './hooks/useOnClickOutside';
 import {DateTimeFormat, formatDateTime} from './util/dateTime.utils';
+import {ICommit} from './domain/ICommit';
 
 const Modal = styled.div<{$isOpen: boolean}>`
     display: ${(props) => (props.$isOpen ? 'flex' : 'none')};
@@ -86,15 +87,19 @@ const ContentItem = styled.div`
 interface CommitDataModalProps {
     isOpen: boolean;
     setIsModalOpen: (isOpen: boolean) => void;
-    commitData: any;
+    selectedEvent: ICommit;
+    setSelectedEvent: (selectedEvent: ICommit) => void;
 }
 
-export default function CommitDataModal(props: CommitDataModalProps): JSX.Element {
-    const {isOpen, setIsModalOpen, commitData} = props;
+export default function CommitDataModal(props: CommitDataModalProps): React.JSX.Element {
+    const {isOpen, setIsModalOpen, selectedEvent, setSelectedEvent} = props;
 
     const dropdownRef = useRef(null);
     useOnClickOutside(dropdownRef, () => {
-        if (isOpen) setIsModalOpen(false);
+        if (isOpen) {
+            setIsModalOpen(false);
+            setSelectedEvent({} as ICommit);
+        }
     });
 
     return (
@@ -103,22 +108,27 @@ export default function CommitDataModal(props: CommitDataModalProps): JSX.Elemen
                 <ModalBody ref={dropdownRef}>
                     <ModalHeader>
                         <Title>Commit data</Title>
-                        <ModalCloseButton onClick={() => setIsModalOpen(false)} />
+                        <ModalCloseButton
+                            onClick={() => {
+                                setIsModalOpen(false);
+                                setSelectedEvent({} as ICommit);
+                            }}
+                        />
                     </ModalHeader>
                     <ModalContent>
                         <ContentItem>
                             <p>
-                                <strong>Message:</strong> {commitData.commit?.message}
+                                <strong>Message:</strong> {selectedEvent.message}
                             </p>
                         </ContentItem>
                         <ContentItem>
                             <p>
-                                <strong>Date:</strong> {formatDateTime(commitData.commit?.author.date, DateTimeFormat.DATE_TIME)}
+                                <strong>Date:</strong> {formatDateTime(selectedEvent.author?.date, DateTimeFormat.DATE_TIME)}
                             </p>
                         </ContentItem>
                         <ContentItem>
                             <p>
-                                <strong>Author:</strong> {commitData.author?.login}
+                                <strong>Author:</strong> {selectedEvent.author?.name}
                             </p>
                         </ContentItem>
                     </ModalContent>
